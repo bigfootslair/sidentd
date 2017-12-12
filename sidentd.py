@@ -1,8 +1,17 @@
 #!/usr/bin/env python3
+import os
 import socket
 import argparse
 import threading
 import uuid
+
+# Try to be portable to non-UNIX systems....
+try:
+	import pwd
+	import grp
+	have_pwd = True
+except:
+	have_pwd = False
 
 # Set the version.
 __version__ = "0.0.4"
@@ -17,6 +26,8 @@ parser.add_argument("--file", help = "If set reads the ident from a file")
 parser.add_argument("--random", help = "If set gives a random ident", action = "store_true")
 parser.add_argument("--static", help = "If set always give this ident")
 parser.add_argument("--error", help = "If set always respond with an unknown user error", action = "store_true")
+parser.add_argument("--uid", help = "If set drops privliges to this user (or UID) after starting up")
+parser.add_argument("--gid", help = "If set drops privliges to this group (or GID) after starting up")
 parser.add_argument("--version", action = "version", version = "sidentd " + __version__)
 args = parser.parse_args()
 
@@ -28,6 +39,34 @@ server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
 # Bind to the IP and port given.
 server.bind((args.bind_ip, args.bind_port))
+
+# Drop our permissions.
+if have_pwd:
+	# Drop the group.
+	if args.gid:
+		# Lookup the group.
+		try:
+			grp_data = grp.getgrnam(args.gid)
+			gid = grp_data.gr_gid
+		except (KeyError, TypeError):
+			# If we fail assume it's a GID.
+			gid = args.uid
+
+		# Switch to it.
+		os.setgid(gid)
+
+	# Drop the user.
+	if args.uid:
+		# Lookup the username.
+		try:
+			pwd_data = pwd.getpwnam(args.uid)
+			uid = pwd_data.pw_uid
+		except (KeyError, TypeError):
+			# If we fail assume it's a UID.
+			uid = args.uid
+
+		# Switch to it.
+		os.setuid(uid)
 
 # Start listening for connections.
 server.listen(args.connection_limit)

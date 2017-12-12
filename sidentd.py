@@ -4,6 +4,9 @@ import argparse
 import multiprocessing
 import uuid
 
+# Set the version.
+__version__ = "0.0.1"
+
 # Parse arguments.
 parser = argparse.ArgumentParser()
 parser.add_argument("--bind_ip", default = "0.0.0.0")
@@ -14,6 +17,7 @@ parser.add_argument("--file")
 parser.add_argument("--random", action = "store_true")
 parser.add_argument("--static")
 parser.add_argument("--error", action = "store_true")
+parser.add_argument("--version", action = 'version', version = "sidentd " + __version__)
 args = parser.parse_args()
 
 # Make a socket.

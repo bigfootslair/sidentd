@@ -14,7 +14,7 @@ except:
 	have_pwd = False
 
 # Set the version.
-__version__ = "0.0.4"
+__version__ = "0.0.5"
 
 # Parse arguments.
 parser = argparse.ArgumentParser(description = "A simple ident daemon written in python")

@@ -5,13 +5,13 @@ import multiprocessing
 import uuid
 
 # Set the version.
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 
 # Parse arguments.
 parser = argparse.ArgumentParser(description = "A simple ident daemon written in python")
 parser.add_argument("--bind_ip", help = "Bind to this IP", default = "0.0.0.0")
 parser.add_argument("--bind_port", help = "Bind to this port", default = 113, type = int)
-parser.add_argument("--port", help = "Only respond to queries for this port", required = True, type = int)
+parser.add_argument("--port", help = "Only respond to queries for this port", required = False, type = int)
 parser.add_argument("--connection_limit", help = "The maximum connections allowed at a time", default = 0, type = int)
 parser.add_argument("--file", help = "If set reads the ident from a file")
 parser.add_argument("--random", help = "If set gives a random ident", action = "store_true")
@@ -47,7 +47,7 @@ def handle_connection(connection, address):
 		return
 
 	# If we aren't suppose to respond on this port, respond with a NO-USER error.
-	if not int(client_port) == args.port:
+	if args.port and not int(client_port) == args.port:
 		print("ERROR: We got a port that doesn't match --port.")
 		connection.send("{}, {} : ERROR : NO-USER".format(server_port, client_port).encode())
 		return
@@ -77,6 +77,9 @@ def handle_connection(connection, address):
 	elif args.error:
 		# Respond with a HIDDEN-USER error.
 		connection.send("{}, {} : ERROR : HIDDEN-USER".format(server_port, client_port).encode())
+	else:
+		# We don't have anything to send, error out.
+		connection.send("{}, {} : ERROR : UNKNOWN-ERROR".format(server_port, client_port).encode())
 
 	# Close the connection.
 	connection.close()

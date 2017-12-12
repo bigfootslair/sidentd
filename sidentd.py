@@ -72,8 +72,8 @@ def handle_connection(connection, address):
 		# Send the ident from the file.
 		connection.send("{}, {} : USERID : OTHER : {}".format(server_port, client_port, file_string).encode())
 	elif args.random:
-		# Use the first chunk of a random UUID.
-		random_string = str(uuid.uuid4()).split("-")[0]
+		# Use a random UUID without the chunk seperators.
+		random_string = uuid.uuid4().hex
 
 		# Send it to the client.
 		connection.send("{}, {} : USERID : OTHER : {}".format(server_port, client_port, random_string).encode())

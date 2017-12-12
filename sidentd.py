@@ -5,18 +5,18 @@ import multiprocessing
 import uuid
 
 # Set the version.
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 # Parse arguments.
-parser = argparse.ArgumentParser()
-parser.add_argument("--bind_ip", default = "0.0.0.0")
-parser.add_argument("--bind_port", default = 113, type = int)
-parser.add_argument("--port", required = True, type = int)
-parser.add_argument("--connection_limit", default = 0, type = int)
-parser.add_argument("--file")
-parser.add_argument("--random", action = "store_true")
-parser.add_argument("--static")
-parser.add_argument("--error", action = "store_true")
+parser = argparse.ArgumentParser(description = "A simple ident daemon written in python")
+parser.add_argument("--bind_ip", help = "Bind to this IP", default = "0.0.0.0")
+parser.add_argument("--bind_port", help = "Bind to this port", default = 113, type = int)
+parser.add_argument("--port", help = "Only respond to queries for this port", required = True, type = int)
+parser.add_argument("--connection_limit", help = "The maximum connections allowed at a time", default = 0, type = int)
+parser.add_argument("--file", help = "If set reads the ident from a file")
+parser.add_argument("--random", help = "If set gives a random ident", action = "store_true")
+parser.add_argument("--static", help = "If set always give this ident")
+parser.add_argument("--error", help = "If set always respond with an unknown user error", action = "store_true")
 parser.add_argument("--version", action = 'version', version = "sidentd " + __version__)
 args = parser.parse_args()
 

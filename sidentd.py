@@ -44,7 +44,7 @@ def handle_connection(connection, address):
 	try:
 		server_port, client_port = data.split(",")
 	except:
-		print("ERROR: We got an invalid port!")
+		print("ERROR: We got an invalid query.")
 		return
 
 	# If we aren't suppose to respond on this port, respond with a NO-USER error.
@@ -59,6 +59,11 @@ def handle_connection(connection, address):
 		try:
 			with open(args.file, "r") as file:
 				file_string = file.readline().split("\n")[0]
+
+			# Check to see if there's actually something in the file.
+			if not file_string:
+				connection.send("{}, {} : ERROR : NO-USER".format(server_port, client_port).encode())
+				return
 		except:
 			# If we have any errors reading the file, respond with an UNKNOWN-ERROR error.
 			connection.send("{}, {} : ERROR : UNKNOWN-ERROR".format(server_port, client_port).encode())

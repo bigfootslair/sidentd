@@ -17,7 +17,7 @@ parser.add_argument("--file", help = "If set reads the ident from a file")
 parser.add_argument("--random", help = "If set gives a random ident", action = "store_true")
 parser.add_argument("--static", help = "If set always give this ident")
 parser.add_argument("--error", help = "If set always respond with an unknown user error", action = "store_true")
-parser.add_argument("--version", action = 'version', version = "sidentd " + __version__)
+parser.add_argument("--version", action = "version", version = "sidentd " + __version__)
 args = parser.parse_args()
 
 # Make a socket.

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 import socket
 import argparse
-import multiprocessing
+import threading
 import uuid
 
 # Set the version.
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 
 # Parse arguments.
 parser = argparse.ArgumentParser(description = "A simple ident daemon written in python")
@@ -34,6 +34,7 @@ server.listen(args.connection_limit)
 
 # Function that handles connections.
 def handle_connection(connection, address):
+	# Debug printing.
 	print("DEBUG: Connection handler starting...")
 
 	# Get a query.
@@ -93,5 +94,5 @@ while True:
 	print("NOTICE: Got a connection from {}.".format(address))
 
 	# Pass it to our handler and move on.
-	process = multiprocessing.Process(target = handle_connection, args = [connection, address])
-	process.start()
+	thread = threading.Thread(target = handle_connection, args = [connection, address])
+	thread.start()
